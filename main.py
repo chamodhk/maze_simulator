@@ -19,9 +19,10 @@ clock = pygame.time.Clock()
 
 running = True
 
-start_pos = (1,2)
+start_pos = (0,0)
 open_list = deque([start_pos])
 visited = set()
+visited.add(start_pos)
 
 
 Rat = pygame.Rect(0, 0, 20,20)
@@ -44,7 +45,7 @@ def draw_rat(screen):
     for neighbor in get_neighhbors(current_pos[0],current_pos[1]):
         # print(neighbor)
         if  neighbor not in visited and maze[neighbor[0]][neighbor[1]] != "#":
-            visited.add(neighbor)
+            # visited.add(neighbor)
             open_list.append(neighbor)
             
 
@@ -98,6 +99,6 @@ while running:
 
     pygame.display.flip()
 
-    clock.tick(120)
+    clock.tick(1000)
 
 pygame.quit() 

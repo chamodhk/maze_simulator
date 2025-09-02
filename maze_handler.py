@@ -122,4 +122,4 @@ def get_neighhbors(row, col):
 
 if __name__ == "__main__":
     # maze_matrix, maze_width, maze_height = get_maze_matrix(maze)
-    print(get_neighhbors(1,))
+    print(get_neighhbors(1,1))
