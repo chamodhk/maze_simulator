@@ -9,7 +9,7 @@ WIDTH = 720
 HEIGHT = 720
 
 cell_width = float(WIDTH/maze_width) 
-print(cell_width)
+
 
 
 pygame.init()
@@ -27,14 +27,16 @@ visited.add(start_pos)
 
 Rat = pygame.Rect(0, 0, 20,20)
 
-
-found = False
+#
 def draw_rat(screen):
+    global found
+    # if open_list:
+
+
     current_pos = open_list.popleft()
-    # print(current_pos)
     # sleep(0.5)
 
-    if current_pos[0] == 39 and current_pos == 39:
+    if current_pos[0] == 20 and current_pos[1] == 19:
         found = True 
         print("break")
         return
@@ -43,14 +45,14 @@ def draw_rat(screen):
     visited.add(current_pos)
 
     for neighbor in get_neighhbors(current_pos[0],current_pos[1]):
-        # print(neighbor)
+      
         if  neighbor not in visited and maze[neighbor[0]][neighbor[1]] != "#":
             # visited.add(neighbor)
             open_list.append(neighbor)
             
 
 
-    Rat = pygame.Rect((current_pos[0]*cell_width, current_pos[1]*cell_width, 20, 20))
+    Rat = pygame.Rect((current_pos[1]*cell_width, current_pos[0]*cell_width, 20, 20))
 
     pygame.draw.rect(screen,"red", Rat)
 
@@ -72,9 +74,9 @@ def draw_maze(screen, maze= maze):
             x2 =round( (i + 1) * cell_width)
             y1 = round(j * cell_width)
             y2 = round((j + 1) * cell_width)
-            Box = pygame.Rect(x1, y1,y2 - y1, x2 - x1)
+            Box = pygame.Rect(y1, x1, y2 - y1, x2 - x1)
             # print(cell)
-            if cell == " ":
+            if cell == ".":
                 pygame.draw.rect(screen, "black", Box)
 
             else:
@@ -84,7 +86,7 @@ def draw_maze(screen, maze= maze):
             if (i,j) in visited:
                 pygame.draw.rect(screen, "blue", Box)
 
-
+found = False
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -96,9 +98,10 @@ while running:
     draw_maze(screen)
     if not found:
         draw_rat(screen)
+    
 
     pygame.display.flip()
 
-    clock.tick(1000)
+    clock.tick(60)
 
 pygame.quit() 
