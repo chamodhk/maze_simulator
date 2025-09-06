@@ -1,7 +1,8 @@
 import pygame
 from maze_handler import get_maze_matrix, get_neighhbors
 from collections import deque
-from time import sleep
+
+
 
 maze, maze_width, maze_height  = get_maze_matrix()
 
@@ -25,36 +26,55 @@ visited = set()
 visited.add(start_pos)
 
 
-Rat = pygame.Rect(0, 0, 20,20)
+Rat = pygame.Rect(0, 0, cell_width,cell_width)
+
+end_pos = (maze_height - 1, maze_width - 1)
 
 #
 def draw_rat(screen):
     global found
-    # if open_list:
+    if open_list:
 
 
-    current_pos = open_list.popleft()
-    # sleep(0.5)
+        current_pos = open_list.popleft()
+        if current_pos == end_pos:
+            found = True 
+            print(len(visited), maze_height*maze_width)
+            get_path()
+            visited.clear()
 
-    if current_pos[0] == 20 and current_pos[1] == 19:
-        found = True 
-        print("break")
-        return
-
-
-    visited.add(current_pos)
-
-    for neighbor in get_neighhbors(current_pos[0],current_pos[1]):
-      
-        if  neighbor not in visited and maze[neighbor[0]][neighbor[1]] != "#":
-            # visited.add(neighbor)
-            open_list.append(neighbor)
-            
+            print("break")
+            return
 
 
-    Rat = pygame.Rect((current_pos[1]*cell_width, current_pos[0]*cell_width, 20, 20))
+        visited.add(current_pos)
+
+        for neighbor in get_neighhbors(current_pos[0],current_pos[1]):
+        
+            if  neighbor not in visited and maze[neighbor[0]][neighbor[1]] != "#":
+                # visited.add(neighbor)
+                parents[neighbor] = current_pos
+                open_list.append(neighbor)
+                
+
+
+    Rat = pygame.Rect((current_pos[1]*cell_width, current_pos[0]*cell_width, cell_width, cell_width))
 
     pygame.draw.rect(screen,"red", Rat)
+
+
+parents = {
+    start_pos : None
+}
+
+path = []
+def get_path():
+    node = end_pos
+    while(parents[node]):
+        path.append(node)
+        node = parents[node]
+
+
 
 def draw_grid(screen):
     # cell_width = (cell_width + cell_height )/2
@@ -86,7 +106,18 @@ def draw_maze(screen, maze= maze):
             if (i,j) in visited:
                 pygame.draw.rect(screen, "blue", Box)
 
+def draw_path(screen):
+    for i, j in path:
+        x1 = round(i * cell_width)
+        x2 =round( (i + 1) * cell_width)
+        y1 = round(j * cell_width)
+        y2 = round((j + 1) * cell_width)
+        pygame.draw.rect(screen, "red", pygame.Rect(y1, x1, y2- y1, x2 - x1))
+
+
 found = False
+# draw_maze(screen)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -98,10 +129,12 @@ while running:
     draw_maze(screen)
     if not found:
         draw_rat(screen)
-    
+    else:
+        draw_path(screen)
+
 
     pygame.display.flip()
 
-    clock.tick(60)
+    # clock.tick(1200)
 
 pygame.quit() 
